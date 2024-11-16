@@ -1,4 +1,4 @@
-//import { useMemo } from "react";
+import { useMemo } from "react";
 import Component from "./components/bill-of-lading";
 import "./App.css";
 import { client, useConfig, useVariable } from "@sigmacomputing/plugin";
@@ -11,22 +11,36 @@ client.config.configureEditorPanel([
 function App() {
   const config = useConfig();
 
-  // Helper function to get control variables
-  const getVariableValue = (configVariable: any): string => {
-    return (
-      useVariable(configVariable)[0]?.defaultValue as unknown as {
-        value: string;
-      }
-    )?.value;
+  // Define all your variables
+  const variables = {
+    shipFromName: useVariable(config.shipFromName)[0],
+    shipFromCorporation: useVariable(config.shipFromCorporation)[0],
+    // ... add other variables
   };
 
-  const shipFromName = getVariableValue(config.shipFromName);
-  const shipFromCorporation = getVariableValue(config.shipFromCorporation);
-  
+  // Helper function
+  const getValueFromVariable = (variable: any): string => {
+    return (variable?.defaultValue as unknown as { value: string })?.value ?? "";
+  };
+
+  // Create memoized values for all variables
+  const values = {
+    shipFromName: useMemo(() => 
+      getValueFromVariable(variables.shipFromName),
+      [variables.shipFromName]
+    ),
+    shipFromCorporation: useMemo(() => 
+      getValueFromVariable(variables.shipFromCorporation),
+      [variables.shipFromCorporation]
+    ),
+    // ... repeat for other variables
+  };
+
   return (
     <Component
-      shipFromName={shipFromName}
-      shipFromCorporation={shipFromCorporation}
+      shipFromName={values.shipFromName}
+      shipFromCorporation={values.shipFromCorporation}
+      // ... other props
       shipFromAddress="3010 Saddle Creek Road"
       shipFromCityStateZip="Lakeland, FL 33801"
       shipFromSID="0058642759"

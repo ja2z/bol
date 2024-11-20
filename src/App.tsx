@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import Component from "./components/bill-of-lading";
 import "./App.css";
-import { client, useConfig, useVariable, useElementData, useElementColumns } from "@sigmacomputing/plugin";
+import { client, useConfig, useElementData, useElementColumns } from "@sigmacomputing/plugin";
 
 client.config.configureEditorPanel([
   { name: "source", type: "element" },

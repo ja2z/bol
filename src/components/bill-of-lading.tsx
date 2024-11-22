@@ -7,7 +7,7 @@ import { MouseEvent } from "react";
 import Barcode from "react-barcode";
 import "@/styles/bill-of-lading.css";
 
-interface CustomerOrderInfo {
+interface CustomerOrderRow {
   orderNumber: string;
   packages: number;
   weight: number;
@@ -84,7 +84,7 @@ interface BillOfLadingProps {
     chepAccount: string;
     sccOrder: string;
   };
-  customerOrder: CustomerOrderInfo;
+  customerOrders: CustomerOrderRow[];
   carrierDetails: CarrierDetails[];
   codAmount: number;
   feeTermsCollect: boolean;
@@ -94,9 +94,7 @@ interface BillOfLadingProps {
 }
 
 const Checkbox = ({ checked }: { checked: boolean }) => (
-  <span className="inline-block w-4 h-4 border border-black text-center leading-4">
-    {checked ? "X" : ""}
-  </span>
+  <span className="inline-block w-4 h-4 border border-black text-center leading-4">{checked ? "X" : ""}</span>
 );
 
 export default function Component({
@@ -109,7 +107,7 @@ export default function Component({
   carrier,
   freightChargeTerms,
   specialInstructions,
-  customerOrder,
+  customerOrders,
   carrierDetails,
   codAmount,
   feeTermsCollect,
@@ -122,24 +120,16 @@ export default function Component({
     documentTitle: "Bill of Lading",
     contentRef: componentRef,
   } as any);
-  // Add this wrapper function
+
   const onClickPrint = (_e: MouseEvent<HTMLButtonElement>) => {
     handlePrint();
   };
 
-  const totalCustomerOrderWeight = customerOrder.weight;
-  const totalCarrierWeight = carrierDetails.reduce(
-    (sum, detail) => sum + detail.weight,
-    0
-  );
-  const totalHandlingUnitQty = carrierDetails.reduce(
-    (sum, detail) => sum + detail.handlingUnit.qty,
-    0
-  );
-  const totalPackageQty = carrierDetails.reduce(
-    (sum, detail) => sum + detail.package.qty,
-    0
-  );
+  const totalCustomerOrderWeight = customerOrders.reduce((sum, order) => sum + order.weight, 0);
+  const totalCustomerOrderPackages = customerOrders.reduce((sum, order) => sum + order.packages, 0);
+  const totalCarrierWeight = carrierDetails.reduce((sum, detail) => sum + detail.weight, 0);
+  const totalHandlingUnitQty = carrierDetails.reduce((sum, detail) => sum + detail.handlingUnit.qty, 0);
+  const totalPackageQty = carrierDetails.reduce((sum, detail) => sum + detail.package.qty, 0);
 
   const fontSizeClass = `text-[${14 + fontSizeOffset}px]`;
 
@@ -168,15 +158,11 @@ export default function Component({
             <div className="w-1/2 border-r border-black">
               {/* SHIP FROM */}
               <div className="border-b border-black p-2">
-                <div className="text-center font-bold bg-black text-white mb-2">
-                  SHIP FROM
-                </div>
+                <div className="text-center font-bold bg-black text-white mb-2">SHIP FROM</div>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
                   <div>Name:</div>
                   <div>{shipFrom.name}</div>
-                  {shipFrom.additionalName && (
-                    <div className="col-start-2">{shipFrom.additionalName}</div>
-                  )}
+                  {shipFrom.additionalName && <div className="col-start-2">{shipFrom.additionalName}</div>}
                   <div>Address:</div>
                   <div>{shipFrom.address}</div>
                   <div>City/State/Zip:</div>
@@ -193,15 +179,11 @@ export default function Component({
 
               {/* SHIP TO */}
               <div className="border-b border-black p-2">
-                <div className="text-center font-bold bg-black text-white mb-2">
-                  SHIP TO
-                </div>
+                <div className="text-center font-bold bg-black text-white mb-2">SHIP TO</div>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
                   <div>Name:</div>
                   <div>{shipTo.name}</div>
-                  {shipTo.additionalName && (
-                    <div className="col-start-2">{shipTo.additionalName}</div>
-                  )}
+                  {shipTo.additionalName && <div className="col-start-2">{shipTo.additionalName}</div>}
                   <div>Address:</div>
                   <div>{shipTo.address}</div>
                   <div>City/State/Zip:</div>
@@ -236,12 +218,7 @@ export default function Component({
               {/* Bill of Lading Number */}
               <div className="border-b border-black p-2">
                 <div>Bill of Lading Number: {bolNumber}</div>
-                <Barcode
-                  value={bolNumber}
-                  width={1}
-                  height={30}
-                  displayValue={false}
-                />
+                <Barcode value={bolNumber} width={1} height={30} displayValue={false} />
               </div>
 
               {/* CARRIER NAME */}
@@ -255,20 +232,12 @@ export default function Component({
               <div className="border-b border-black p-2">
                 <div>SCAC: {carrier.scac}</div>
                 <div>Pro Number: {carrier.proNumber}</div>
-                <Barcode
-                  value={carrier.proNumber}
-                  width={1}
-                  height={30}
-                  displayValue={false}
-                />
+                <Barcode value={carrier.proNumber} width={1} height={30} displayValue={false} />
               </div>
 
               {/* Freight Charge Terms */}
               <div className="border-b border-black p-2">
-                <div>
-                  Freight Charge Terms: (freight charges are prepaid unless
-                  marked otherwise)
-                </div>
+                <div>Freight Charge Terms: (freight charges are prepaid unless marked otherwise)</div>
                 <div className="grid grid-cols-3 gap-4 mt-2">
                   <div>
                     Prepaid <Checkbox checked={freightChargeTerms.prepaid} />
@@ -277,25 +246,22 @@ export default function Component({
                     Collect <Checkbox checked={freightChargeTerms.collect} />
                   </div>
                   <div>
-                    3rd Party{" "}
-                    <Checkbox checked={freightChargeTerms.thirdParty} />
+                    3rd Party <Checkbox checked={freightChargeTerms.thirdParty} />
                   </div>
                 </div>
               </div>
 
               {/* Master Bill of Lading */}
               <div className="p-2">
-                <Checkbox checked={freightChargeTerms.masterBol} /> Master Bill
-                of Lading with attached underlying Bills of Lading
+                <Checkbox checked={freightChargeTerms.masterBol} /> Master Bill of Lading with attached
+                underlying Bills of Lading
               </div>
             </div>
           </div>
 
           {/* Special Instructions */}
           <div className="border-t border-b border-black p-2">
-            <div className="text-center font-bold bg-black text-white mb-2">
-              SPECIAL INSTRUCTIONS
-            </div>
+            <div className="text-center font-bold bg-black text-white mb-2">SPECIAL INSTRUCTIONS</div>
             <div className="grid grid-cols-2">
               <div>{specialInstructions.warehouseInstructions}</div>
               <div>
@@ -308,15 +274,11 @@ export default function Component({
 
           {/* Customer Order Information */}
           <div className="border-b border-black">
-            <div className="text-center font-bold bg-black text-white">
-              CUSTOMER ORDER INFORMATION
-            </div>
+            <div className="text-center font-bold bg-black text-white">CUSTOMER ORDER INFORMATION</div>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-black">
-                  <th className="border-r border-black p-1">
-                    CUSTOMER ORDER NUMBER
-                  </th>
+                  <th className="border-r border-black p-1">CUSTOMER ORDER NUMBER</th>
                   <th className="border-r border-black p-1"># PKGS</th>
                   <th className="border-r border-black p-1">WEIGHT</th>
                   <th className="border-r border-black p-1">PALLET/SLIP</th>
@@ -324,29 +286,19 @@ export default function Component({
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border-r border-black p-1">
-                    {customerOrder.orderNumber}
-                  </td>
-                  <td className="border-r border-black p-1 text-center">
-                    {customerOrder.packages}
-                  </td>
-                  <td className="border-r border-black p-1 text-center">
-                    {customerOrder.weight} LBS
-                  </td>
-                  <td className="border-r border-black p-1 text-center">
-                    {customerOrder.palletSlip}
-                  </td>
-                  <td className="p-1">{customerOrder.additionalInfo}</td>
-                </tr>
+                {customerOrders.map((order, index) => (
+                  <tr key={index} className="border-b border-black">
+                    <td className="border-r border-black p-1">{order.orderNumber}</td>
+                    <td className="border-r border-black p-1 text-center">{order.packages}</td>
+                    <td className="border-r border-black p-1 text-center">{order.weight} LBS</td>
+                    <td className="border-r border-black p-1 text-center">{order.palletSlip}</td>
+                    <td className="p-1">{order.additionalInfo}</td>
+                  </tr>
+                ))}
                 <tr className="border-t border-black font-bold">
                   <td className="border-r border-black p-1">GRAND TOTAL</td>
-                  <td className="border-r border-black p-1 text-center">
-                    {customerOrder.packages}
-                  </td>
-                  <td className="border-r border-black p-1 text-center">
-                    {totalCustomerOrderWeight} LBS
-                  </td>
+                  <td className="border-r border-black p-1 text-center">{totalCustomerOrderPackages}</td>
+                  <td className="border-r border-black p-1 text-center">{totalCustomerOrderWeight} LBS</td>
                   <td className="border-r border-black p-1 bg-gray-300"></td>
                   <td className="p-1 bg-gray-300"></td>
                 </tr>
@@ -356,9 +308,7 @@ export default function Component({
 
           {/* Carrier Information */}
           <div className="border-b border-black">
-            <div className="text-center font-bold bg-black text-white">
-              CARRIER INFORMATION
-            </div>
+            <div className="text-center font-bold bg-black text-white">CARRIER INFORMATION</div>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-black">
@@ -393,45 +343,25 @@ export default function Component({
               <tbody>
                 {carrierDetails.map((detail, index) => (
                   <tr key={index} className="border-b border-black">
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.handlingUnit.qty}
-                    </td>
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.handlingUnit.type}
-                    </td>
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.package.qty}
-                    </td>
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.package.type}
-                    </td>
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.weight} LBS
-                    </td>
+                    <td className="border-r border-black p-1 text-center">{detail.handlingUnit.qty}</td>
+                    <td className="border-r border-black p-1 text-center">{detail.handlingUnit.type}</td>
+                    <td className="border-r border-black p-1 text-center">{detail.package.qty}</td>
+                    <td className="border-r border-black p-1 text-center">{detail.package.type}</td>
+                    <td className="border-r border-black p-1 text-center">{detail.weight} LBS</td>
                     <td className="border-r border-black p-1 text-center">
                       <Checkbox checked={detail.hazmatX} />
                     </td>
-                    <td className="border-r border-black p-1">
-                      {detail.description}
-                    </td>
-                    <td className="border-r border-black p-1 text-center">
-                      {detail.nmfcNumber}
-                    </td>
+                    <td className="border-r border-black p-1">{detail.description}</td>
+                    <td className="border-r border-black p-1 text-center">{detail.nmfcNumber}</td>
                     <td className="p-1 text-center">{detail.class}</td>
                   </tr>
                 ))}
                 <tr className="border-t border-black font-bold">
-                  <td className="border-r border-black p-1 text-center">
-                    {totalHandlingUnitQty}
-                  </td>
+                  <td className="border-r border-black p-1 text-center">{totalHandlingUnitQty}</td>
                   <td className="border-r border-black p-1"></td>
-                  <td className="border-r border-black p-1 text-center">
-                    {totalPackageQty}
-                  </td>
+                  <td className="border-r border-black p-1 text-center">{totalPackageQty}</td>
                   <td className="border-r border-black p-1"></td>
-                  <td className="border-r border-black p-1 text-center">
-                    {totalCarrierWeight} LBS
-                  </td>
+                  <td className="border-r border-black p-1 text-center">{totalCarrierWeight} LBS</td>
                   <td className="border-r border-black p-1"></td>
                   <td className="border-r border-black p-1">GRAND TOTAL</td>
                   <td className="border-r border-black p-1"></td>
@@ -444,66 +374,44 @@ export default function Component({
           {/* Rate Dependent and COD Sections */}
           <div className="flex border-b border-black">
             <div className="w-3/5 border-r border-black p-2 text-xs">
-              Where the rate is dependent on value, shippers are required to
-              state specifically in writing the agreed or declared value of the
-              property as follows: "The agreed or declared value of the property
-              is specifically stated by the shipper to be not exceeding ___ per
-              ___."
+              Where the rate is dependent on value, shippers are required to state specifically in writing the
+              agreed or declared value of the property as follows: "The agreed or declared value of the
+              property is specifically stated by the shipper to be not exceeding ___ per ___."
             </div>
             <div className="w-2/5 p-2">
               <div>
-                COD Amount: ${codAmount}{" "}
-                <span className="inline-block w-20 border-b border-black"></span>
+                COD Amount: ${codAmount} <span className="inline-block w-20 border-b border-black"></span>
               </div>
               <div>
-                Fee Terms: Collect{" "}
-                <span
-                  className={`inline-block w-4 border-b border-black ${
-                    feeTermsCollect ? "bg-black" : ""
-                  }`}
-                ></span>
-                Prepaid{" "}
-                <span
-                  className={`inline-block w-4 border-b border-black ${
-                    feeTermsPrepaid ? "bg-black" : ""
-                  }`}
-                ></span>
+                Fee Terms: Collect <Checkbox checked={feeTermsCollect} />
+                Prepaid <Checkbox checked={feeTermsPrepaid} />
               </div>
               <div>
-                Customer Check Acceptable:{" "}
-                <span
-                  className={`inline-block w-4 border-b border-black ${
-                    customerCheckAcceptable ? "bg-black" : ""
-                  }`}
-                ></span>
+                Customer Check Acceptable: <Checkbox checked={customerCheckAcceptable} />
               </div>
             </div>
           </div>
 
           {/* LIABILITY_NOTE */}
           <div className="border-b border-black p-2 text-xs">
-            NOTE: Liability limitation for loss or damage in this shipment may
-            be applicable. See 49 U.S.C. §14706(c)(1)(A) and (B).
+            NOTE: Liability limitation for loss or damage in this shipment may be applicable. See 49 U.S.C.
+            §14706(c)(1)(A) and (B).
           </div>
 
           {/* RECEIVED_TEXT and SHIPPER_SIGNATURE */}
           <div className="flex">
             <div className="w-1/2 border-r border-black p-2 text-xs">
-              RECEIVED, subject to individually determined rates or contracts
-              that have been agreed upon in writing between the carrier and
-              shipper, if applicable, otherwise to the rates, classifications
-              and rules that have been established by the carrier and are
-              available to the shipper, on request, and to all applicable state
-              and federal regulations.
+              RECEIVED, subject to individually determined rates or contracts that have been agreed upon in
+              writing between the carrier and shipper, if applicable, otherwise to the rates, classifications
+              and rules that have been established by the carrier and are available to the shipper, on
+              request, and to all applicable state and federal regulations.
             </div>
             <div className="w-1/2 p-2">
               <div className="text-xs mb-4">
-                The carrier shall not make delivery of this shipment without
-                payment of freight and all other lawful charges.
+                The carrier shall not make delivery of this shipment without payment of freight and all other
+                lawful charges.
               </div>
-              <div className="mt-16 border-t border-black pt-1">
-                SHIPPER SIGNATURE
-              </div>
+              <div className="mt-16 border-t border-black pt-1">SHIPPER SIGNATURE</div>
             </div>
           </div>
         </div>

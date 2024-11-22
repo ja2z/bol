@@ -36,11 +36,6 @@ client.config.configureEditorPanel([
   { name: "attnCarrier", type: "column", source: "bol", allowMultiple: false },
   { name: "chepAccount", type: "column", source: "bol", allowMultiple: false },
   { name: "sccOrder", type: "column", source: "bol", allowMultiple: false },
-  { name: "customerOrderNumber", type: "column", source: "bol", allowMultiple: false },
-  { name: "customerOrderPackages", type: "column", source: "bol", allowMultiple: false },
-  { name: "customerOrderWeight", type: "column", source: "bol", allowMultiple: false },
-  { name: "customerOrderPalletSlip", type: "column", source: "bol", allowMultiple: false },
-  { name: "customerOrderAdditionalInfo", type: "column", source: "bol", allowMultiple: false },
   { name: "codAmount", type: "column", source: "bol", allowMultiple: false },
   { name: "feeTermsCollect", type: "column", source: "bol", allowMultiple: false },
   { name: "feeTermsPrepaid", type: "column", source: "bol", allowMultiple: false },
@@ -55,6 +50,12 @@ client.config.configureEditorPanel([
   { name: "description", type: "column", source: "carrier", allowMultiple: false },
   { name: "nmfcNumber", type: "column", source: "carrier", allowMultiple: false },
   { name: "class", type: "column", source: "carrier", allowMultiple: false },
+  { name: "customer", type: "element" },
+  { name: "customerOrderNumber", type: "column", source: "customer", allowMultiple: false },
+  { name: "customerOrderPackages", type: "column", source: "customer", allowMultiple: false },
+  { name: "customerOrderWeight", type: "column", source: "customer", allowMultiple: false },
+  { name: "customerOrderPalletSlip", type: "column", source: "customer", allowMultiple: false },
+  { name: "customerOrderAdditionalInfo", type: "column", source: "customer", allowMultiple: false },
 ]);
 
 function App() {
@@ -63,6 +64,8 @@ function App() {
   const bolColumns = useElementColumns(config.bol);
   const carrierData = useElementData(config.carrier);
   const carrierColumns = useElementColumns(config.carrier);
+  const customerData = useElementData(config.customer);
+  const customerColumns = useElementColumns(config.customer);
 
   // Define fields by source
   const fields = {
@@ -98,11 +101,6 @@ function App() {
       "attnCarrier",
       "chepAccount",
       "sccOrder",
-      "customerOrderNumber",
-      "customerOrderPackages",
-      "customerOrderWeight",
-      "customerOrderPalletSlip",
-      "customerOrderAdditionalInfo",
       "codAmount",
       "feeTermsCollect",
       "feeTermsPrepaid",
@@ -119,10 +117,17 @@ function App() {
       "nmfcNumber",
       "class",
     ] as const,
+    customer: [
+      "customerOrderNumber",
+      "customerOrderPackages",
+      "customerOrderWeight",
+      "customerOrderPalletSlip",
+      "customerOrderAdditionalInfo",
+    ] as const,
   };
 
   // Get field values for a specific source
-  const getFieldValues = (source: 'bol' | 'carrier', data: any, columns: any) => {
+  const getFieldValues = (source: 'bol' | 'carrier' | 'customer', data: any, columns: any) => {
     const getFieldValue = (fieldName: string) => {
       const fieldId = Object.keys(columns).find((key) => columns[key].name === fieldName);
       if (fieldId && data[fieldId]) {
@@ -137,11 +142,12 @@ function App() {
     }, {} as Record<string, string>);
   };
 
-  // Get field values for both sources
+  // Get field values for all sources
   const fieldValues = useMemo(() => ({
     bol: getFieldValues('bol', bolData, bolColumns),
     carrier: getFieldValues('carrier', carrierData, carrierColumns),
-  }), [bolData, bolColumns, carrierData, carrierColumns]);
+    customer: getFieldValues('customer', customerData, customerColumns),
+  }), [bolData, bolColumns, carrierData, carrierColumns, customerData, customerColumns]);
 
   // Transform carrier data into the required format
   const transformedCarrierDetails = useMemo(() => {
@@ -178,6 +184,34 @@ function App() {
       };
     });
   }, [carrierData, carrierColumns]);
+
+  // Transform customer data into the required format
+  const transformedCustomerOrders = useMemo(() => {
+    if (!customerData || Object.keys(customerData).length === 0) return [];
+
+    // Get the first column's data length to determine number of rows
+    const firstColumnId = Object.keys(customerData)[0];
+    const numRows = customerData[firstColumnId]?.length || 0;
+
+    // Create an array of customer order objects
+    return Array.from({ length: numRows }, (_, rowIndex) => {
+      // Find column IDs for each field
+      const getColumnValue = (fieldName: string) => {
+        const columnId = Object.keys(customerColumns).find(
+          (key) => customerColumns[key].name === fieldName
+        );
+        return columnId ? customerData[columnId]?.[rowIndex] : null;
+      };
+
+      return {
+        orderNumber: getColumnValue('customerOrderNumber') || '',
+        packages: Number(getColumnValue('customerOrderPackages')) || 0,
+        weight: Number(getColumnValue('customerOrderWeight')) || 0,
+        palletSlip: getColumnValue('customerOrderPalletSlip') || '',
+        additionalInfo: getColumnValue('customerOrderAdditionalInfo') || '',
+      };
+    });
+  }, [customerData, customerColumns]);
 
   return (
     <Component
@@ -224,13 +258,7 @@ function App() {
         chepAccount: fieldValues.bol.chepAccount,
         sccOrder: fieldValues.bol.sccOrder,
       }}
-      customerOrder={{
-        orderNumber: fieldValues.bol.customerOrderNumber,
-        packages: Number(fieldValues.bol.customerOrderPackages) || 0,
-        weight: Number(fieldValues.bol.customerOrderWeight) || 0,
-        palletSlip: fieldValues.bol.customerOrderPalletSlip,
-        additionalInfo: fieldValues.bol.customerOrderAdditionalInfo,
-      }}
+      customerOrders={transformedCustomerOrders}
       carrierDetails={transformedCarrierDetails}
       codAmount={Number(fieldValues.bol.codAmount)}
       feeTermsCollect={Boolean(fieldValues.bol.feeTermsCollect)}

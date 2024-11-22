@@ -4,294 +4,240 @@ import "./App.css";
 import { client, useConfig, useElementData, useElementColumns } from "@sigmacomputing/plugin";
 
 client.config.configureEditorPanel([
-  { name: "source", type: "element" },
-  { name: "shipDate", type: "column", source: "source", allowMultiple: false },
-  { name: "bolNumber", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromName", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromAdditionalName", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromAddress", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromCityStateZip", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromSid", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromSn", type: "column", source: "source", allowMultiple: false },
-  { name: "shipFromFob", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToName", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToAdditionalName", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToAddress", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToCityStateZip", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToCid", type: "column", source: "source", allowMultiple: false },
-  { name: "shipToFob", type: "column", source: "source", allowMultiple: false },
-  { name: "thirdPartyName", type: "column", source: "source", allowMultiple: false },
-  { name: "thirdPartyAddress", type: "column", source: "source", allowMultiple: false },
-  { name: "thirdPartyCityStateZip", type: "column", source: "source", allowMultiple: false },
-  { name: "carrierName", type: "column", source: "source", allowMultiple: false },
-  { name: "carrierTrailerNumber", type: "column", source: "source", allowMultiple: false },
-  { name: "carrierSealNumbers", type: "column", source: "source", allowMultiple: false },
-  { name: "carrierScac", type: "column", source: "source", allowMultiple: false },
-  { name: "carrierProNumber", type: "column", source: "source", allowMultiple: false },
-  { name: "freightChargePrepaid", type: "column", source: "source", allowMultiple: false },
-  { name: "freightChargeCollect", type: "column", source: "source", allowMultiple: false },
-  { name: "freightChargeThirdParty", type: "column", source: "source", allowMultiple: false },
-  { name: "freightChargeMasterBol", type: "column", source: "source", allowMultiple: false },
-  { name: "warehouseInstructions", type: "column", source: "source", allowMultiple: false },
-  { name: "attnCarrier", type: "column", source: "source", allowMultiple: false },
-  { name: "chepAccount", type: "column", source: "source", allowMultiple: false },
-  { name: "sccOrder", type: "column", source: "source", allowMultiple: false },
-  { name: "customerOrderNumber", type: "column", source: "source", allowMultiple: false },
-  { name: "customerOrderPackages", type: "column", source: "source", allowMultiple: false },
-  { name: "customerOrderWeight", type: "column", source: "source", allowMultiple: false },
-  { name: "customerOrderPalletSlip", type: "column", source: "source", allowMultiple: false },
-  { name: "customerOrderAdditionalInfo", type: "column", source: "source", allowMultiple: false },
-  { name: "codAmount", type: "column", source: "source", allowMultiple: false },
-  { name: "feeTermsCollect", type: "column", source: "source", allowMultiple: false },
-  { name: "feeTermsPrepaid", type: "column", source: "source", allowMultiple: false },
-  { name: "customerCheckAcceptable", type: "column", source: "source", allowMultiple: false },
+  { name: "bol", type: "element" },
+  { name: "shipDate", type: "column", source: "bol", allowMultiple: false },
+  { name: "bolNumber", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromName", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromAdditionalName", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromAddress", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromCityStateZip", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromSid", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromSn", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipFromFob", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToName", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToAdditionalName", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToAddress", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToCityStateZip", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToCid", type: "column", source: "bol", allowMultiple: false },
+  { name: "shipToFob", type: "column", source: "bol", allowMultiple: false },
+  { name: "thirdPartyName", type: "column", source: "bol", allowMultiple: false },
+  { name: "thirdPartyAddress", type: "column", source: "bol", allowMultiple: false },
+  { name: "thirdPartyCityStateZip", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrierName", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrierTrailerNumber", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrierSealNumbers", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrierScac", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrierProNumber", type: "column", source: "bol", allowMultiple: false },
+  { name: "freightChargePrepaid", type: "column", source: "bol", allowMultiple: false },
+  { name: "freightChargeCollect", type: "column", source: "bol", allowMultiple: false },
+  { name: "freightChargeThirdParty", type: "column", source: "bol", allowMultiple: false },
+  { name: "freightChargeMasterBol", type: "column", source: "bol", allowMultiple: false },
+  { name: "warehouseInstructions", type: "column", source: "bol", allowMultiple: false },
+  { name: "attnCarrier", type: "column", source: "bol", allowMultiple: false },
+  { name: "chepAccount", type: "column", source: "bol", allowMultiple: false },
+  { name: "sccOrder", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerOrderNumber", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerOrderPackages", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerOrderWeight", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerOrderPalletSlip", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerOrderAdditionalInfo", type: "column", source: "bol", allowMultiple: false },
+  { name: "codAmount", type: "column", source: "bol", allowMultiple: false },
+  { name: "feeTermsCollect", type: "column", source: "bol", allowMultiple: false },
+  { name: "feeTermsPrepaid", type: "column", source: "bol", allowMultiple: false },
+  { name: "customerCheckAcceptable", type: "column", source: "bol", allowMultiple: false },
+  { name: "carrier", type: "element" },
+  { name: "handlingUnit_qty", type: "column", source: "carrier", allowMultiple: false },
+  { name: "handlingUnit_type", type: "column", source: "carrier", allowMultiple: false },
+  { name: "package_qty", type: "column", source: "carrier", allowMultiple: false },
+  { name: "package_type", type: "column", source: "carrier", allowMultiple: false },
+  { name: "weight", type: "column", source: "carrier", allowMultiple: false },
+  { name: "hazmatX", type: "column", source: "carrier", allowMultiple: false },
+  { name: "description", type: "column", source: "carrier", allowMultiple: false },
+  { name: "nmfcNumber", type: "column", source: "carrier", allowMultiple: false },
+  { name: "class", type: "column", source: "carrier", allowMultiple: false },
 ]);
 
 function App() {
   const config = useConfig();
-  const sigmaData = useElementData(config.source);
-  const columnInfo = useElementColumns(config.source);
+  const bolData = useElementData(config.bol);
+  const bolColumns = useElementColumns(config.bol);
+  const carrierData = useElementData(config.carrier);
+  const carrierColumns = useElementColumns(config.carrier);
 
-  // Define all your field names
-  const fields = [
-    "shipDate",
-    "bolNumber",
-    "shipFromName",
-    "shipFromAdditionalName",
-    "shipFromAddress",
-    "shipFromCityStateZip",
-    "shipFromSid",
-    "shipFromSn",
-    "shipFromFob",
-    "shipToName",
-    "shipToAdditionalName",
-    "shipToAddress",
-    "shipToCityStateZip",
-    "shipToCid",
-    "shipToFob",
-    "thirdPartyName",
-    "thirdPartyAddress",
-    "thirdPartyCityStateZip",
-    "carrierName",
-    "carrierTrailerNumber",
-    "carrierSealNumbers",
-    "carrierScac",
-    "carrierProNumber",
-    "freightChargePrepaid",
-    "freightChargeCollect",
-    "freightChargeThirdParty",
-    "freightChargeMasterBol",
-    "warehouseInstructions",
-    "attnCarrier",
-    "chepAccount",
-    "sccOrder",
-    "customerOrderNumber",
-    "customerOrderPackages",
-    "customerOrderWeight",
-    "customerOrderPalletSlip",
-    "customerOrderAdditionalInfo",
-    "codAmount",
-    "feeTermsCollect",
-    "feeTermsPrepaid",
-    "customerCheckAcceptable",
-  ] as const;
+  // Define fields by source
+  const fields = {
+    bol: [
+      "shipDate",
+      "bolNumber",
+      "shipFromName",
+      "shipFromAdditionalName",
+      "shipFromAddress",
+      "shipFromCityStateZip",
+      "shipFromSid",
+      "shipFromSn",
+      "shipFromFob",
+      "shipToName",
+      "shipToAdditionalName",
+      "shipToAddress",
+      "shipToCityStateZip",
+      "shipToCid",
+      "shipToFob",
+      "thirdPartyName",
+      "thirdPartyAddress",
+      "thirdPartyCityStateZip",
+      "carrierName",
+      "carrierTrailerNumber",
+      "carrierSealNumbers",
+      "carrierScac",
+      "carrierProNumber",
+      "freightChargePrepaid",
+      "freightChargeCollect",
+      "freightChargeThirdParty",
+      "freightChargeMasterBol",
+      "warehouseInstructions",
+      "attnCarrier",
+      "chepAccount",
+      "sccOrder",
+      "customerOrderNumber",
+      "customerOrderPackages",
+      "customerOrderWeight",
+      "customerOrderPalletSlip",
+      "customerOrderAdditionalInfo",
+      "codAmount",
+      "feeTermsCollect",
+      "feeTermsPrepaid",
+      "customerCheckAcceptable",
+    ] as const,
+    carrier: [
+      "handlingUnit_qty",
+      "handlingUnit_type",
+      "package_qty",
+      "package_type",
+      "weight",
+      "hazmatX",
+      "description",
+      "nmfcNumber",
+      "class",
+    ] as const,
+  };
 
-  const fieldValues = useMemo(() => {
-    const getFieldValue = (fieldName: (typeof fields)[number]) => {
-      const fieldId = Object.keys(columnInfo).find((key) => columnInfo[key].name === fieldName);
-
-      if (fieldId && sigmaData[fieldId]) {
-        return sigmaData[fieldId][0] || "";
+  // Get field values for a specific source
+  const getFieldValues = (source: 'bol' | 'carrier', data: any, columns: any) => {
+    const getFieldValue = (fieldName: string) => {
+      const fieldId = Object.keys(columns).find((key) => columns[key].name === fieldName);
+      if (fieldId && data[fieldId]) {
+        return data[fieldId][0] || "";
       }
       return "";
     };
 
-    return fields.reduce((acc, field) => {
+    return fields[source].reduce((acc, field) => {
       acc[field] = getFieldValue(field);
       return acc;
-    }, {} as Record<(typeof fields)[number], string>);
-  }, [sigmaData, columnInfo]);
-
-  // Sample carrier details - you may want to make this dynamic based on your needs
-  const carrierDetails = [
-    {
-      handlingUnit: { qty: 23, type: "CHEP" },
-      package: { qty: 46, type: "CS" },
-      weight: 1000,
-      hazmatX: false,
-      description: "Packaged goods",
-      nmfcNumber: "12345",
-      class: "50",
-    },
-    {
-      handlingUnit: { qty: 2, type: "WW" },
-      package: { qty: 4, type: "CS" },
-      weight: 200,
-      hazmatX: false,
-      description: "Additional goods",
-      nmfcNumber: "67890",
-      class: "55",
-    },
-  ];
-
-  return (
-    <Component
-      shipDate={fieldValues.shipDate}
-      bolNumber={fieldValues.bolNumber}
-      shipFrom={{
-        name: fieldValues.shipFromName,
-        additionalName: fieldValues.shipFromAdditionalName,
-        address: fieldValues.shipFromAddress,
-        cityStateZip: fieldValues.shipFromCityStateZip,
-        sid: fieldValues.shipFromSid,
-        sn: fieldValues.shipFromSn,
-        fob: Boolean(fieldValues.shipFromFob),
-      }}
-      shipTo={{
-        name: fieldValues.shipToName,
-        additionalName: fieldValues.shipToAdditionalName,
-        address: fieldValues.shipToAddress,
-        cityStateZip: fieldValues.shipToCityStateZip,
-        cid: fieldValues.shipToCid,
-        fob: Boolean(fieldValues.shipToFob),
-      }}
-      thirdParty={{
-        name: fieldValues.thirdPartyName,
-        address: fieldValues.thirdPartyAddress,
-        cityStateZip: fieldValues.thirdPartyCityStateZip,
-      }}
-      carrier={{
-        name: fieldValues.carrierName,
-        trailerNumber: fieldValues.carrierTrailerNumber,
-        sealNumbers: fieldValues.carrierSealNumbers,
-        scac: fieldValues.carrierScac,
-        proNumber: fieldValues.carrierProNumber,
-      }}
-      freightChargeTerms={{
-        prepaid: Boolean(fieldValues.freightChargePrepaid),
-        collect: Boolean(fieldValues.freightChargeCollect),
-        thirdParty: Boolean(fieldValues.freightChargeThirdParty),
-        masterBol: Boolean(fieldValues.freightChargeMasterBol),
-      }}
-      specialInstructions={{
-        warehouseInstructions: fieldValues.warehouseInstructions,
-        attnCarrier: fieldValues.attnCarrier,
-        chepAccount: fieldValues.chepAccount,
-        sccOrder: fieldValues.sccOrder,
-      }}
-      customerOrder={{
-        orderNumber: fieldValues.customerOrderNumber,
-        packages: Number(fieldValues.customerOrderPackages) || 0,
-        weight: Number(fieldValues.customerOrderWeight) || 0,
-        palletSlip: fieldValues.customerOrderPalletSlip,
-        additionalInfo: fieldValues.customerOrderAdditionalInfo,
-      }}
-      carrierDetails={carrierDetails}
-      codAmount={fieldValues.codAmount}
-      feeTermsCollect={Boolean(fieldValues.feeTermsCollect)}
-      feeTermsPrepaid={Boolean(fieldValues.feeTermsPrepaid)}
-      customerCheckAcceptable={Boolean(fieldValues.customerCheckAcceptable)}
-    />
-  );
-
-  /*
-
-
-  // Helper function
-  const getValueFromVariable = (variable: any): string => {
-    return (variable?.defaultValue as unknown as { value: string })?.value ?? "";
+    }, {} as Record<string, string>);
   };
 
-  // Create an object with all variables
-  const variables = Object.fromEntries(fields.map((field) => [field, useVariable(config[field])[0]]));
+  // Get field values for both sources
+  const fieldValues = useMemo(() => ({
+    bol: getFieldValues('bol', bolData, bolColumns),
+    carrier: getFieldValues('carrier', carrierData, carrierColumns),
+  }), [bolData, bolColumns, carrierData, carrierColumns]);
 
-  // Create memoized values for all variables
-  const values = Object.fromEntries(
-    fields.map((field) => [field, useMemo(() => getValueFromVariable(variables[field]), [variables[field]])])
-  );
+  // Transform carrier data into the required format
+  const transformedCarrierDetails = useMemo(() => {
+    if (!carrierData || Object.keys(carrierData).length === 0) return [];
 
-  // Sample carrier details - you may want to make this dynamic based on your needs
-  const carrierDetails = [
-    {
-      handlingUnit: { qty: 23, type: "CHEP" },
-      package: { qty: 46, type: "CS" },
-      weight: 1000,
-      hazmatX: false,
-      description: "Packaged goods",
-      nmfcNumber: "12345",
-      class: "50",
-    },
-    {
-      handlingUnit: { qty: 2, type: "WW" },
-      package: { qty: 4, type: "CS" },
-      weight: 200,
-      hazmatX: false,
-      description: "Additional goods",
-      nmfcNumber: "67890",
-      class: "55",
-    },
-  ];
+    // Get the first column's data length to determine number of rows
+    const firstColumnId = Object.keys(carrierData)[0];
+    const numRows = carrierData[firstColumnId]?.length || 0;
+
+    // Create an array of carrier detail objects
+    return Array.from({ length: numRows }, (_, rowIndex) => {
+      // Find column IDs for each field
+      const getColumnValue = (fieldName: string) => {
+        const columnId = Object.keys(carrierColumns).find(
+          (key) => carrierColumns[key].name === fieldName
+        );
+        return columnId ? carrierData[columnId]?.[rowIndex] : null;
+      };
+
+      return {
+        handlingUnit: {
+          qty: Number(getColumnValue('handlingUnit_qty')) || 0,
+          type: getColumnValue('handlingUnit_type') || '',
+        },
+        package: {
+          qty: Number(getColumnValue('package_qty')) || 0,
+          type: getColumnValue('package_type') || '',
+        },
+        weight: Number(getColumnValue('weight')) || 0,
+        hazmatX: Boolean(getColumnValue('hazmatX')),
+        description: getColumnValue('description') || '',
+        nmfcNumber: getColumnValue('nmfcNumber') || '',
+        class: getColumnValue('class') || '',
+      };
+    });
+  }, [carrierData, carrierColumns]);
 
   return (
     <Component
-      shipDate={values.shipDate}
-      bolNumber={values.bolNumber}
+      shipDate={fieldValues.bol.shipDate}
+      bolNumber={fieldValues.bol.bolNumber}
       shipFrom={{
-        name: values.shipFromName,
-        additionalName: values.shipFromAdditionalName,
-        address: shipFromAddress,
-        cityStateZip: values.shipFromCityStateZip,
-        sid: values.shipFromSid,
-        sn: values.shipFromSn,
-        fob: Boolean(values.shipFromFob),
+        name: fieldValues.bol.shipFromName,
+        additionalName: fieldValues.bol.shipFromAdditionalName,
+        address: fieldValues.bol.shipFromAddress,
+        cityStateZip: fieldValues.bol.shipFromCityStateZip,
+        sid: fieldValues.bol.shipFromSid,
+        sn: fieldValues.bol.shipFromSn,
+        fob: Boolean(fieldValues.bol.shipFromFob),
       }}
       shipTo={{
-        name: values.shipToName,
-        additionalName: values.shipToAdditionalName,
-        address: values.shipToAddress,
-        cityStateZip: values.shipToCityStateZip,
-        cid: values.shipToCid,
-        fob: Boolean(values.shipToFob),
+        name: fieldValues.bol.shipToName,
+        additionalName: fieldValues.bol.shipToAdditionalName,
+        address: fieldValues.bol.shipToAddress,
+        cityStateZip: fieldValues.bol.shipToCityStateZip,
+        cid: fieldValues.bol.shipToCid,
+        fob: Boolean(fieldValues.bol.shipToFob),
       }}
       thirdParty={{
-        name: values.thirdPartyName,
-        address: values.thirdPartyAddress,
-        cityStateZip: values.thirdPartyCityStateZip,
+        name: fieldValues.bol.thirdPartyName,
+        address: fieldValues.bol.thirdPartyAddress,
+        cityStateZip: fieldValues.bol.thirdPartyCityStateZip,
       }}
       carrier={{
-        name: values.carrierName,
-        trailerNumber: values.carrierTrailerNumber,
-        sealNumbers: values.carrierSealNumbers,
-        scac: values.carrierScac,
-        proNumber: values.carrierProNumber,
+        name: fieldValues.bol.carrierName,
+        trailerNumber: fieldValues.bol.carrierTrailerNumber,
+        sealNumbers: fieldValues.bol.carrierSealNumbers,
+        scac: fieldValues.bol.carrierScac,
+        proNumber: fieldValues.bol.carrierProNumber,
       }}
       freightChargeTerms={{
-        prepaid: Boolean(values.freightChargePrepaid),
-        collect: Boolean(values.freightChargeCollect),
-        thirdParty: Boolean(values.freightChargeThirdParty),
-        masterBol: Boolean(values.freightChargeMasterBol),
+        prepaid: Boolean(fieldValues.bol.freightChargePrepaid),
+        collect: Boolean(fieldValues.bol.freightChargeCollect),
+        thirdParty: Boolean(fieldValues.bol.freightChargeThirdParty),
+        masterBol: Boolean(fieldValues.bol.freightChargeMasterBol),
       }}
       specialInstructions={{
-        warehouseInstructions: values.warehouseInstructions,
-        attnCarrier: values.attnCarrier,
-        chepAccount: values.chepAccount,
-        sccOrder: values.sccOrder,
+        warehouseInstructions: fieldValues.bol.warehouseInstructions,
+        attnCarrier: fieldValues.bol.attnCarrier,
+        chepAccount: fieldValues.bol.chepAccount,
+        sccOrder: fieldValues.bol.sccOrder,
       }}
       customerOrder={{
-        orderNumber: values.customerOrderNumber,
-        packages: Number(values.customerOrderPackages) || 0,
-        weight: Number(values.customerOrderWeight) || 0,
-        palletSlip: values.customerOrderPalletSlip,
-        additionalInfo: values.customerOrderAdditionalInfo,
+        orderNumber: fieldValues.bol.customerOrderNumber,
+        packages: Number(fieldValues.bol.customerOrderPackages) || 0,
+        weight: Number(fieldValues.bol.customerOrderWeight) || 0,
+        palletSlip: fieldValues.bol.customerOrderPalletSlip,
+        additionalInfo: fieldValues.bol.customerOrderAdditionalInfo,
       }}
-      carrierDetails={carrierDetails}
-      codAmount={values.codAmount}
-      feeTermsCollect={Boolean(values.feeTermsCollect)}
-      feeTermsPrepaid={Boolean(values.feeTermsPrepaid)}
-      customerCheckAcceptable={Boolean(values.customerCheckAcceptable)}
+      carrierDetails={transformedCarrierDetails}
+      codAmount={Number(fieldValues.bol.codAmount)}
+      feeTermsCollect={Boolean(fieldValues.bol.feeTermsCollect)}
+      feeTermsPrepaid={Boolean(fieldValues.bol.feeTermsPrepaid)}
+      customerCheckAcceptable={Boolean(fieldValues.bol.customerCheckAcceptable)}
     />
   );
-  */
 }
 
 export default App;

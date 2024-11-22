@@ -86,7 +86,7 @@ interface BillOfLadingProps {
   };
   customerOrder: CustomerOrderInfo;
   carrierDetails: CarrierDetails[];
-  codAmount: string;
+  codAmount: number;
   feeTermsCollect: boolean;
   feeTermsPrepaid: boolean;
   customerCheckAcceptable: boolean;

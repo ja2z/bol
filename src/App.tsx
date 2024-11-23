@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import Component from "./components/bill-of-lading";
 import "./App.css";
-import { client, useConfig, useElementData, useElementColumns } from "@sigmacomputing/plugin";
+import { client, useConfig, useElementData } from "@sigmacomputing/plugin";
 
 client.config.configureEditorPanel([
   { name: "bol", type: "element" },
@@ -40,8 +40,8 @@ client.config.configureEditorPanel([
   { name: "feeTermsCollect", type: "column", source: "bol", allowMultiple: false },
   { name: "feeTermsPrepaid", type: "column", source: "bol", allowMultiple: false },
   { name: "customerCheckAcceptable", type: "column", source: "bol", allowMultiple: false },
-  { name: "trailerLoadedBy", type: "column", source: "bol", allowMultiple: false }, // Added
-  { name: "freightCountedBy", type: "column", source: "bol", allowMultiple: false }, // Added
+  { name: "trailerLoadedBy", type: "column", source: "bol", allowMultiple: false },
+  { name: "freightCountedBy", type: "column", source: "bol", allowMultiple: false },
   { name: "carrier", type: "element" },
   { name: "handlingUnit_qty", type: "column", source: "carrier", allowMultiple: false },
   { name: "handlingUnit_type", type: "column", source: "carrier", allowMultiple: false },
@@ -63,11 +63,8 @@ client.config.configureEditorPanel([
 function App() {
   const config = useConfig();
   const bolData = useElementData(config.bol);
-  const bolColumns = useElementColumns(config.bol);
   const carrierData = useElementData(config.carrier);
-  const carrierColumns = useElementColumns(config.carrier);
   const customerData = useElementData(config.customer);
-  const customerColumns = useElementColumns(config.customer);
 
   // Define fields by source
   const fields = {
@@ -107,8 +104,8 @@ function App() {
       "feeTermsCollect",
       "feeTermsPrepaid",
       "customerCheckAcceptable",
-      "trailerLoadedBy", // Added
-      "freightCountedBy", // Added
+      "trailerLoadedBy",
+      "freightCountedBy",
     ] as const,
     carrier: [
       "handlingUnit_qty",
@@ -131,27 +128,19 @@ function App() {
   };
 
   // Get field values for a specific source
-  const getFieldValues = (source: 'bol' | 'carrier' | 'customer', data: any, columns: any) => {
-    const getFieldValue = (fieldName: string) => {
-      const fieldId = Object.keys(columns).find((key) => columns[key].name === fieldName);
-      if (fieldId && data[fieldId]) {
-        return data[fieldId][0] || "";
-      }
-      return "";
-    };
-
+  const getFieldValues = (source: 'bol' | 'carrier' | 'customer', data: any) => {
     return fields[source].reduce((acc, field) => {
-      acc[field] = getFieldValue(field);
+      acc[field] = data[config[field]]?.[0] || "";
       return acc;
     }, {} as Record<string, string>);
   };
 
   // Get field values for all sources
   const fieldValues = useMemo(() => ({
-    bol: getFieldValues('bol', bolData, bolColumns),
-    carrier: getFieldValues('carrier', carrierData, carrierColumns),
-    customer: getFieldValues('customer', customerData, customerColumns),
-  }), [bolData, bolColumns, carrierData, carrierColumns, customerData, customerColumns]);
+    bol: getFieldValues('bol', bolData),
+    carrier: getFieldValues('carrier', carrierData),
+    customer: getFieldValues('customer', customerData),
+  }), [bolData, carrierData, customerData, config]);
 
   // Transform carrier data into the required format
   const transformedCarrierDetails = useMemo(() => {
@@ -162,10 +151,7 @@ function App() {
 
     return Array.from({ length: numRows }, (_, rowIndex) => {
       const getColumnValue = (fieldName: string) => {
-        const columnId = Object.keys(carrierColumns).find(
-          (key) => carrierColumns[key].name === fieldName
-        );
-        return columnId ? carrierData[columnId]?.[rowIndex] : null;
+        return carrierData[config[fieldName]]?.[rowIndex];
       };
   
       return {
@@ -177,14 +163,14 @@ function App() {
           qty: Number(getColumnValue('package_qty')) || 0,
           type: getColumnValue('package_type') || '',
         },
-        weight: Math.round(Number(getColumnValue('weight')) || 0),  // Round weight to whole number
+        weight: Math.round(Number(getColumnValue('weight')) || 0),
         hazmatX: Boolean(getColumnValue('hazmatX')),
         description: getColumnValue('description') || '',
         nmfcNumber: getColumnValue('nmfcNumber') || '',
         class: getColumnValue('class') || '',
       };
     });
-  }, [carrierData, carrierColumns]);
+  }, [carrierData, config]);
 
   // Transform customer data into the required format
   const transformedCustomerOrders = useMemo(() => {
@@ -195,22 +181,18 @@ function App() {
   
     return Array.from({ length: numRows }, (_, rowIndex) => {
       const getColumnValue = (fieldName: string) => {
-        const columnId = Object.keys(customerColumns).find(
-          (key) => customerColumns[key].name === fieldName
-        );
-        return columnId ? customerData[columnId]?.[rowIndex] : null;
+        return customerData[config[fieldName]]?.[rowIndex];
       };
   
       return {
         orderNumber: getColumnValue('customerOrderNumber') || '',
-        packages: Math.round(Number(getColumnValue('customerOrderPackages')) || 0),  // Round packages to whole number
-        weight: Math.round(Number(getColumnValue('customerOrderWeight')) || 0),  // Round weight to whole number
+        packages: Math.round(Number(getColumnValue('customerOrderPackages')) || 0),
+        weight: Math.round(Number(getColumnValue('customerOrderWeight')) || 0),
         palletSlip: getColumnValue('customerOrderPalletSlip') || '',
         additionalInfo: getColumnValue('customerOrderAdditionalInfo') || '',
       };
     });
-  }, [customerData, customerColumns]);
-  
+  }, [customerData, config]);
 
   return (
     <Component

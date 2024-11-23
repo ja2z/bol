@@ -159,7 +159,7 @@ function App() {
   
     const firstColumnId = Object.keys(carrierData)[0];
     const numRows = carrierData[firstColumnId]?.length || 0;
-  
+
     return Array.from({ length: numRows }, (_, rowIndex) => {
       const getColumnValue = (fieldName: string) => {
         const columnId = Object.keys(carrierColumns).find(
@@ -186,8 +186,6 @@ function App() {
     });
   }, [carrierData, carrierColumns]);
 
-  console.log("carrier details transformed: ");
-  console.log(transformedCarrierDetails);
   // Transform customer data into the required format
   const transformedCustomerOrders = useMemo(() => {
     if (!customerData || Object.keys(customerData).length === 0) return [];

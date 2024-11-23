@@ -40,6 +40,8 @@ client.config.configureEditorPanel([
   { name: "feeTermsCollect", type: "column", source: "bol", allowMultiple: false },
   { name: "feeTermsPrepaid", type: "column", source: "bol", allowMultiple: false },
   { name: "customerCheckAcceptable", type: "column", source: "bol", allowMultiple: false },
+  { name: "trailerLoadedBy", type: "column", source: "bol", allowMultiple: false }, // Added
+  { name: "freightCountedBy", type: "column", source: "bol", allowMultiple: false }, // Added
   { name: "carrier", type: "element" },
   { name: "handlingUnit_qty", type: "column", source: "carrier", allowMultiple: false },
   { name: "handlingUnit_type", type: "column", source: "carrier", allowMultiple: false },
@@ -105,6 +107,8 @@ function App() {
       "feeTermsCollect",
       "feeTermsPrepaid",
       "customerCheckAcceptable",
+      "trailerLoadedBy", // Added
+      "freightCountedBy", // Added
     ] as const,
     carrier: [
       "handlingUnit_qty",
@@ -264,6 +268,8 @@ function App() {
       feeTermsCollect={Boolean(fieldValues.bol.feeTermsCollect)}
       feeTermsPrepaid={Boolean(fieldValues.bol.feeTermsPrepaid)}
       customerCheckAcceptable={Boolean(fieldValues.bol.customerCheckAcceptable)}
+      trailerLoadedBy={fieldValues.bol.trailerLoadedBy}
+      freightCountedBy={fieldValues.bol.freightCountedBy}
     />
   );
 }

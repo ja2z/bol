@@ -91,6 +91,8 @@ interface BillOfLadingProps {
   feeTermsPrepaid: boolean;
   customerCheckAcceptable: boolean;
   fontSizeOffset?: number;
+  trailerLoadedBy: string;
+  freightCountedBy: string;
 }
 
 const Checkbox = ({ checked }: { checked: boolean }) => (
@@ -114,6 +116,8 @@ export default function Component({
   feeTermsPrepaid,
   customerCheckAcceptable,
   fontSizeOffset = -2,
+  trailerLoadedBy,
+  freightCountedBy,
 }: BillOfLadingProps) {
   const componentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
@@ -131,7 +135,26 @@ export default function Component({
   const totalHandlingUnitQty = carrierDetails.reduce((sum, detail) => sum + detail.handlingUnit.qty, 0);
   const totalPackageQty = carrierDetails.reduce((sum, detail) => sum + detail.package.qty, 0);
 
-  const fontSizeClass = `text-[${14 + fontSizeOffset}px]`;
+
+
+  // Map fontSizeOffset to Tailwind text size classes
+  const getFontSizeClass = (offset: number) => {
+    const sizeMap: { [key: number]: string } = {
+      [-4]: "text-xs",  // 12px
+      [-3]: "text-sm",  // 13px
+      [-2]: "text-sm",  // 14px
+      [-1]: "text-base", // 15px
+      0: "text-base",  // 16px
+      1: "text-lg",    // 17px
+      2: "text-lg",    // 18px
+      3: "text-xl",    // 19px
+      4: "text-xl",    // 20px
+    };
+    return sizeMap[offset] || "text-base";
+  };
+
+  const fontSizeClass = getFontSizeClass(fontSizeOffset);
+  const smallerFontClass = getFontSizeClass(fontSizeOffset - 2); // For notes and smaller text
 
   return (
     <div className="w-full max-w-[8.5in] mx-auto">
@@ -373,7 +396,8 @@ export default function Component({
 
           {/* Rate Dependent and COD Sections */}
           <div className="flex border-b border-black">
-            <div className="w-3/5 border-r border-black p-2 text-xs">
+            <div className={`w-3/5 border-r border-black p-2 ${smallerFontClass}`}>
+
               Where the rate is dependent on value, shippers are required to state specifically in writing the
               agreed or declared value of the property as follows: "The agreed or declared value of the
               property is specifically stated by the shipper to be not exceeding ___ per ___."
@@ -393,29 +417,100 @@ export default function Component({
           </div>
 
           {/* LIABILITY_NOTE */}
-          <div className="border-b border-black p-2 text-xs">
+          <div className={`border-b border-black p-2 ${smallerFontClass}`}>
             NOTE: Liability limitation for loss or damage in this shipment may be applicable. See 49 U.S.C.
             §14706(c)(1)(A) and (B).
           </div>
 
           {/* RECEIVED_TEXT and SHIPPER_SIGNATURE */}
           <div className="flex">
-            <div className="w-1/2 border-r border-black p-2 text-xs">
+            <div className={`w-1/2 border-r border-black p-2 ${smallerFontClass}`}>
               RECEIVED, subject to individually determined rates or contracts that have been agreed upon in
               writing between the carrier and shipper, if applicable, otherwise to the rates, classifications
               and rules that have been established by the carrier and are available to the shipper, on
               request, and to all applicable state and federal regulations.
             </div>
             <div className="w-1/2 p-2">
-              <div className="text-xs mb-4">
+              <div className={`${smallerFontClass} mb-4`}>
                 The carrier shall not make delivery of this shipment without payment of freight and all other
                 lawful charges.
               </div>
               <div className="mt-16 border-t border-black pt-1">SHIPPER SIGNATURE</div>
             </div>
           </div>
+
+          {/* Bottom Section with Signatures and Loading Details */}
+          <div className="relative border-t border-black">
+            <div className="flex">
+              {/* Left Column - Shipper Signature */}
+              <div className="w-1/3 border-r border-black p-2 flex flex-col justify-between">
+                <div>
+                  <div className="font-bold mb-2">SHIPPER SIGNATURE / DATE</div>
+                  <div className={`${smallerFontClass} mb-4`}>
+                    This is to certify that the above named materials are properly
+                    classified, packaged, marked and labeled, and are in proper condition
+                    for transportation according to the applicable regulations of the DOT.
+                  </div>
+                </div>
+                <div className="mt-auto">{shipFrom.name}</div>
+              </div>
+
+              {/* Middle Column - Loading Details */}
+              <div className="w-1/3 border-r border-black p-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="mb-2 font-bold">Trailer Loaded:</div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={trailerLoadedBy === 'By Shipper'} /> By Shipper
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={trailerLoadedBy === 'By Driver'} /> By Driver
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mb-2 font-bold">Freight Counted:</div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={freightCountedBy === 'By Shipper'} /> By Shipper
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={freightCountedBy === 'By Driver/pallets said to contain'} /> 
+                        By Driver/pallets
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox checked={freightCountedBy === 'By Driver/Pieces'} /> By Driver/Pieces
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Carrier Signature */}
+              <div className="w-1/3 p-2">
+                <div className="font-bold mb-2">CARRIER SIGNATURE / PICKUP DATE</div>
+                <div className={`${smallerFontClass} mb-2`}>
+                  Carrier acknowledges receipt of packages and required placards.
+                  Carrier certifies emergency response information was made
+                  available and/or carrier has the DOT emergency response
+                  guidebook or equivalent documentation in the vehicle.
+                </div>
+                <div className="mt-16 mb-4 border-b border-black"></div>
+                <div className={`${smallerFontClass} mb-4`}>
+                  Property described above is received in good order, except as
+                  noted.
+                </div>
+              </div>
+            </div>
+            
+          </div>
         </div>
       </div>
+      {/* Bill of Lading Number - Below the border */}
+      <div className="text-sm mt-2 text-right pr-2">
+        <div>Bill of Lading Number: {bolNumber}</div>
+      </div>
     </div>
-  );
+  )
 }

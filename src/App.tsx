@@ -156,21 +156,18 @@ function App() {
   // Transform carrier data into the required format
   const transformedCarrierDetails = useMemo(() => {
     if (!carrierData || Object.keys(carrierData).length === 0) return [];
-
-    // Get the first column's data length to determine number of rows
+  
     const firstColumnId = Object.keys(carrierData)[0];
     const numRows = carrierData[firstColumnId]?.length || 0;
-
-    // Create an array of carrier detail objects
+  
     return Array.from({ length: numRows }, (_, rowIndex) => {
-      // Find column IDs for each field
       const getColumnValue = (fieldName: string) => {
         const columnId = Object.keys(carrierColumns).find(
           (key) => carrierColumns[key].name === fieldName
         );
         return columnId ? carrierData[columnId]?.[rowIndex] : null;
       };
-
+  
       return {
         handlingUnit: {
           qty: Number(getColumnValue('handlingUnit_qty')) || 0,
@@ -180,7 +177,7 @@ function App() {
           qty: Number(getColumnValue('package_qty')) || 0,
           type: getColumnValue('package_type') || '',
         },
-        weight: Number(getColumnValue('weight')) || 0,
+        weight: Math.round(Number(getColumnValue('weight')) || 0),  // Round weight to whole number
         hazmatX: Boolean(getColumnValue('hazmatX')),
         description: getColumnValue('description') || '',
         nmfcNumber: getColumnValue('nmfcNumber') || '',
@@ -189,33 +186,33 @@ function App() {
     });
   }, [carrierData, carrierColumns]);
 
+  console.log("carrier details transformed: ");
+  console.log(transformedCarrierDetails);
   // Transform customer data into the required format
   const transformedCustomerOrders = useMemo(() => {
     if (!customerData || Object.keys(customerData).length === 0) return [];
-
-    // Get the first column's data length to determine number of rows
+  
     const firstColumnId = Object.keys(customerData)[0];
     const numRows = customerData[firstColumnId]?.length || 0;
-
-    // Create an array of customer order objects
+  
     return Array.from({ length: numRows }, (_, rowIndex) => {
-      // Find column IDs for each field
       const getColumnValue = (fieldName: string) => {
         const columnId = Object.keys(customerColumns).find(
           (key) => customerColumns[key].name === fieldName
         );
         return columnId ? customerData[columnId]?.[rowIndex] : null;
       };
-
+  
       return {
         orderNumber: getColumnValue('customerOrderNumber') || '',
-        packages: Number(getColumnValue('customerOrderPackages')) || 0,
-        weight: Number(getColumnValue('customerOrderWeight')) || 0,
+        packages: Math.round(Number(getColumnValue('customerOrderPackages')) || 0),  // Round packages to whole number
+        weight: Math.round(Number(getColumnValue('customerOrderWeight')) || 0),  // Round weight to whole number
         palletSlip: getColumnValue('customerOrderPalletSlip') || '',
         additionalInfo: getColumnValue('customerOrderAdditionalInfo') || '',
       };
     });
   }, [customerData, customerColumns]);
+  
 
   return (
     <Component

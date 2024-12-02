@@ -181,7 +181,7 @@ export default function Component({
             <div className="w-1/2 border-r border-black">
               {/* SHIP FROM */}
               <div className="border-b border-black p-2">
-                <div className="text-center font-bold bg-black text-white mb-2">SHIP FROM</div>
+                <div className="bol-section-header mb-2">SHIP FROM</div>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
                   <div>Name:</div>
                   <div>{shipFrom.name}</div>
@@ -202,7 +202,7 @@ export default function Component({
 
               {/* SHIP TO */}
               <div className="border-b border-black p-2">
-                <div className="text-center font-bold bg-black text-white mb-2">SHIP TO</div>
+                <div className="bol-section-header mb-2">SHIP TO</div>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
                   <div>Name:</div>
                   <div>{shipTo.name}</div>
@@ -222,7 +222,7 @@ export default function Component({
 
               {/* THIRD PARTY FREIGHT CHARGES BILL TO */}
               <div className="p-2">
-                <div className="text-center font-bold bg-black text-white mb-2">
+                <div className="bol-section-header mb-2">
                   THIRD PARTY FREIGHT CHARGES BILL TO
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
@@ -284,7 +284,7 @@ export default function Component({
 
           {/* Special Instructions */}
           <div className="border-t border-b border-black p-2">
-            <div className="text-center font-bold bg-black text-white mb-2">SPECIAL INSTRUCTIONS</div>
+            <div className="bol-section-header mb-2">SPECIAL INSTRUCTIONS</div>
             <div className="grid grid-cols-2">
               <div>{specialInstructions.warehouseInstructions}</div>
               <div>
@@ -297,7 +297,7 @@ export default function Component({
 
           {/* Customer Order Information */}
           <div className="border-b border-black">
-            <div className="text-center font-bold bg-black text-white">CUSTOMER ORDER INFORMATION</div>
+            <div className="bol-section-header">CUSTOMER ORDER INFORMATION</div>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-black">
@@ -331,7 +331,7 @@ export default function Component({
 
           {/* Carrier Information */}
           <div className="border-b border-black">
-            <div className="text-center font-bold bg-black text-white">CARRIER INFORMATION</div>
+            <div className="bol-section-header">CARRIER INFORMATION</div>
             <table className="w-full">
               <thead>
                 <tr className="border-b border-black">

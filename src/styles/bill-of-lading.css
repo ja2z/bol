@@ -1,40 +1,70 @@
+/* Base styles */
 .bol-wrapper {
-    font-size: 12px;
-    line-height: 1.2;
+  font-size: 12px;
+  line-height: 1.2;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.bol-wrapper * {
+  font-family: Arial, sans-serif;
+}
+
+.bol-wrapper h1,
+.bol-wrapper h2,
+.bol-wrapper h3,
+.bol-wrapper h4,
+.bol-wrapper h5,
+.bol-wrapper h6 {
+  font-size: inherit;
+  font-weight: bold;
+}
+
+.bol-wrapper table {
+  font-size: inherit;
+}
+
+.bol-wrapper th,
+.bol-wrapper td {
+  padding: 2px 4px;
+}
+
+.bol-section-header {
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  background-color: black !important;
+  color: white !important;
+  padding: 2px 0;
+}
+
+.bol-label {
+  font-weight: bold;
+}
+
+/* Print-specific styles */
+@media print {
+  .bol-wrapper {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  
-  .bol-wrapper * {
-    font-family: Arial, sans-serif;
-  }
-  
-  .bol-wrapper h1,
-  .bol-wrapper h2,
-  .bol-wrapper h3,
-  .bol-wrapper h4,
-  .bol-wrapper h5,
-  .bol-wrapper h6 {
-    font-size: inherit;
-    font-weight: bold;
-  }
-  
+
+  /* Prevent page breaks within tables */
   .bol-wrapper table {
-    font-size: inherit;
+    page-break-inside: avoid;
   }
   
+  /* Ensure backgrounds and colors print correctly */
+  .bol-wrapper .bg-black,
+  .bol-section-header {
+    background-color: black !important;
+    color: white !important;
+  }
+
+  /* Ensure borders print clearly */
+  .bol-wrapper table,
   .bol-wrapper th,
   .bol-wrapper td {
-    padding: 2px 4px;
+    border-color: black !important;
   }
-  
-  .bol-section-header {
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    background-color: black;
-    color: white;
-    padding: 2px 0;
-  }
-  
-  .bol-label {
-    font-weight: bold;
-  }
+}
